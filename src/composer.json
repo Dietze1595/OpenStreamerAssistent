@@ -1,0 +1,8 @@
+{
+    "name": "kapsonfire/opentwitchassistent",
+    "type": "project",
+    "require": {
+        "ext-swoole": "^4.5@alpha",
+        "php": ">=8.0.*"
+    }
+}
