@@ -4,5 +4,6 @@
     "require": {
         "ext-swoole": "^4.5@alpha",
         "php": ">=8.0.*"
-    }
+    },
+    "license": "BSD-3.0"
 }
