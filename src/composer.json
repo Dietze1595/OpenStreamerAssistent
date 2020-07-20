@@ -1,9 +1,18 @@
 {
-    "name": "kapsonfire/opentwitchassistent",
-    "type": "project",
-    "require": {
-        "ext-swoole": "^4.5@alpha",
-        "php": ">=8.0.*"
-    },
-    "license": "BSD-3.0"
+  "name": "kapsonfire/opentwitchassistent",
+  "type": "project",
+  "require": {
+    "ext-swoole": "^4.5@alpha",
+    "php": ">=8.0.0",
+    "ext-json": "*"
+  },
+  "license": "BSD-3.0",
+  "require-dev": {
+    "eaglewu/swoole-ide-helper": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "OTA\\": "inc/OTA"
+    }
+  }
 }

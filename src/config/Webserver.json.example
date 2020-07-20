@@ -1,0 +1,8 @@
+{
+  "ipv4": "127.0.0.1",
+  "ipv6": "::1",
+  "port": 2709,
+  "portSSL": 2710,
+  "cert_file": null,
+  "cert_key": null
+}

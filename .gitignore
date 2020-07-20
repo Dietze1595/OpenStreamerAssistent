@@ -1,2 +1,4 @@
 /.idea/
 /src/vendor/
+/priv-src/
+/src/config/*.json
