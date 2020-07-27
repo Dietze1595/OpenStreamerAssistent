@@ -6,6 +6,7 @@ namespace OTA\Twitch;
 
 use OTA\EventEmitter;
 use OTA\Swoole\WebsocketClient;
+use OTA\Twitch\IRC\IRCParser;
 use Swoole\WebSocket\Frame;
 
 class ChatClient
@@ -80,6 +81,7 @@ class ChatClient
                 $this->send('PONG');
             }
             //@TODO: Parse message and add event handlers
+            $msg = IRCParser::parse($msg);
         }
     }
 

@@ -12,6 +12,7 @@ class EventEmitter
      * @var CallableArray[]
      */
     private array $eventArray;
+    private bool $allowUnknownEvents = false;
 
     /**
      * EventEmitter constructor.
@@ -19,9 +20,18 @@ class EventEmitter
      */
     public function __construct(string ...$eventNames)
     {
+        $this->eventArray = [];
         foreach ($eventNames as $name) {
             $this->eventArray[strtolower(trim($name))] = new CallableArray();
         }
+    }
+
+
+    public function allowUnknownEvents() {
+        $this->allowUnknownEvents = true;
+    }
+    public function disallowUnknownEvents() {
+        $this->allowUnknownEvents = false;
     }
 
     /**
@@ -32,7 +42,9 @@ class EventEmitter
     public function on(string $event, callable $callable) {
         $name = strtolower(trim($event));
         if(!isset($this->eventArray[$name])) {
-            throw new Exception('Event not found.');
+            if(!$this->allowUnknownEvents)
+                throw new Exception('Event not found.');
+            return;
         }
         $this->eventArray[$name][] = $callable;
     }
@@ -45,7 +57,9 @@ class EventEmitter
     public function emit(string $event, ...$args) {
         $name = strtolower(trim($event));
         if(!isset($this->eventArray[$name])) {
-            throw new Exception('Event not found.');
+            if(!$this->allowUnknownEvents)
+                throw new Exception('Event not found.');
+            return;
         }
 
         foreach ($this->eventArray[$name] as $cb) {

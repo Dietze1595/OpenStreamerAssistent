@@ -34,11 +34,21 @@ class WebsocketClient
         $this->events = new EventEmitter('connect', 'message', 'close');
     }
 
+    /**
+     * @param string $event
+     * @param callable $callback
+     * @throws Exception
+     */
     public function on(string $event, callable $callback)
     {
         $this->events->on($event, $callback);
     }
 
+    /**
+     * @param string $event
+     * @param mixed ...$args
+     * @throws Exception
+     */
     private function emit(string $event, ...$args)
     {
         $this->events->emit($event, ...$args);
