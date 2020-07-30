@@ -107,4 +107,8 @@ class CallableArray implements ArrayAccess, Iterator, Countable
     {
         return count($this->container);
     }
+
+    public function add(callable $cb) {
+        $this->container[] = $cb;
+    }
 }

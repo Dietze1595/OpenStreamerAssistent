@@ -44,9 +44,9 @@ class EventEmitter
         if(!isset($this->eventArray[$name])) {
             if(!$this->allowUnknownEvents)
                 throw new Exception('Event not found.');
-            return;
+            $this->eventArray[$name] = [];
         }
-        $this->eventArray[$name][] = $callable;
+        $this->eventArray[$name]->add($callable);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use OTA\Twitch\ChatClient;
 use OTA\Twitch\ChatClientConfig;
+use OTA\Twitch\IRC\BaseMessage;
 use OTA\Webserver\WebserverConfig;
 
 define('ROOT', __DIR__);

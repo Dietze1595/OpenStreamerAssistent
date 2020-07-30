@@ -11,6 +11,9 @@ class IRCParser
             $unknown = substr($msg, 5);
             return new BaseMessage('PING', null, $unknown);
         }
+        if(str_ends_with($msg, PHP_EOL)) {
+            $msg = substr($msg, 0, -1);
+        }
 
 
         $tags = new TwitchIRCTags();
@@ -32,6 +35,10 @@ class IRCParser
         switch($type) {
             case 'JOIN':
                 return new JOIN($tags, $from, $msg);
+            case 'PRIVMSG':
+                return new PRIVMSG($tags, $from, $msg);
+            case '353': //userlist
+                return new USERLIST($tags, $from, $msg);
         }
 
 
