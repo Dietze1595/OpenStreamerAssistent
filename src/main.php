@@ -1,7 +1,7 @@
 <?php
 
 use OTA\Twitch\ChatClient;
-use OTA\Twitch\ChatClientConfig;
+use OTA\Twitch\TwitchConfig;
 use OTA\Twitch\IRC\BaseMessage;
 use OTA\Webserver\WebserverConfig;
 
@@ -12,14 +12,13 @@ require ROOT . '/vendor/autoload.php';
 
 Swoole\Runtime::enableCoroutine();
 
-$webserverJSON = json_decode(file_get_contents(ROOT . '/config/Webserver.json'), TRUE);
-$config = new WebserverConfig($webserverJSON);
+
+$config = new WebserverConfig(ROOT . '/config/Webserver.json');
 $webserver = new OTA\Webserver\Webserver($config);
 
 //since we have eventloop inside the webserver we need the webserver to start the coroutine for our other processes
 $webserver->addStartCoroutine(function() {
-    $twitchJSON = json_decode(file_get_contents(ROOT.'/config/TwitchChatClient.json'), true);
-    $config = new ChatClientConfig($twitchJSON);
+    $config = new TwitchConfig(ROOT.'/config/Twitch.json');
     $client = new ChatClient($config);
     $client->connect();
 });

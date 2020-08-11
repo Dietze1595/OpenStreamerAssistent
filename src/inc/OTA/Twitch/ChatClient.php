@@ -7,17 +7,18 @@ use Closure;
 use OTA\EventEmitter;
 use OTA\Swoole\WebsocketClient;
 use OTA\Twitch\IRC\BaseMessage;
-use OTA\Twitch\IRC\IRCParser;
+use OTA\Twitch\IRC\GLOBALUSERSTATE;
 use OTA\Twitch\IRC\JOIN;
 use OTA\Twitch\IRC\PART;
 use OTA\Twitch\IRC\USERLIST;
+use OTA\Twitch\IRC\IRCParser;
 use Swoole\WebSocket\Frame;
 
 class ChatClient
 {
     static private ?ChatClient $SELF = null;
     private ?WebsocketClient $client;
-    private ChatClientConfig $config;
+    private TwitchConfig $config;
     private bool $reconnect = true;
     private EventEmitter $events;
 
@@ -35,7 +36,7 @@ class ChatClient
         $this->userlist[$user] = time();
     }
 
-    public function __construct(ChatClientConfig $config)
+    public function __construct(TwitchConfig $config)
     {
         if (self::$SELF) {
             throw new \Exception('Only singleton');
@@ -120,6 +121,8 @@ class ChatClient
             $this->removeUser($msg->getUsername());
         } else if ($msg instanceof USERLIST) {
             array_map(fn($user) => $this->addUser($user), $msg->getUsers());
+        } else  if ($msg instanceof GLOBALUSERSTATE) {
+            $this->config->setUsername($msg->getDisplayName());
         }
     }
 
@@ -148,6 +151,7 @@ class ChatClient
                 $this->send('PONG');
             }
             $msg = IRCParser::parse($msg);
+            if($msg === null) continue;
             $this->events->emit('message', $this, $msg);
         }
     }

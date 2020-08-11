@@ -32,16 +32,30 @@ class IRCParser
         $parts = explode(' ', $msg, 3);
         [$from, $type, $msg] = [$parts[0]??'',$parts[1]??'',$parts[2]??''];
 
-        switch($type) {
-            case 'JOIN':
-                return new JOIN($tags, $from, $msg);
-            case 'PRIVMSG':
-                return new PRIVMSG($tags, $from, $msg);
-            case '353': //userlist
+
+
+        $type = trim($type);
+        $classname = 'OTA\\Twitch\\IRC\\'.$type;
+        if(class_exists($classname, true)) {
+            return new $classname($tags, $from, $msg);
+        }
+        switch(trim($type)) {
+            case '001': //welcome
+            case '002': //hostname
+            case '003': //server new
+            case '004': //-
+            case '372': //>
+            case '375': //-
+            case '376': //>
+            case '366': //end of userlist
+                return null;
+
+           case '353': //userlist
                 return new USERLIST($tags, $from, $msg);
+
         }
 
-
+        DEBUG_LOG('UNKNOWN IRC TYPE: '.$type);
         return new BaseMessage($type, $tags, $msg);
     }
 }

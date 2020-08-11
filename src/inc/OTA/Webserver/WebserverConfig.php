@@ -4,8 +4,13 @@
 namespace OTA\Webserver;
 
 
+use OTA\JSONConfig;
+
 class WebserverConfig
 {
+    /**
+     * DEFAULT VALUES
+     */
     private ?string $cert_file = null;
     private ?string $cert_key = null;
     private int $portSSL = 443;
@@ -14,13 +19,10 @@ class WebserverConfig
     private string $ipv6 = '::1';
 
 
-    public function __construct(array $config)
+    private JSONConfig $config;
+    public function __construct(string $path)
     {
-        foreach ($config as $k => $v) {
-            if(property_exists($this, $k)) {
-                $this->$k = $v;
-            }
-        }
+        $this->config = JSONConfig::get($path);
     }
 
     /**
@@ -28,7 +30,7 @@ class WebserverConfig
      */
     public function getPortSSL(): int
     {
-        return $this->portSSL;
+        return $this->config->portSSL ?? $this->portSSL;
     }
 
     /**
@@ -36,7 +38,7 @@ class WebserverConfig
      */
     public function getCertKey(): ?string
     {
-        return $this->cert_key;
+        return $this->config->cert_key ?? $this->cert_key;
     }
 
     /**
@@ -44,7 +46,7 @@ class WebserverConfig
      */
     public function getCertFile(): ?string
     {
-        return $this->cert_file;
+        return $this->config->cert_file ?? $this->cert_file;
     }
 
     /**
@@ -52,7 +54,7 @@ class WebserverConfig
      */
     public function getPort(): int
     {
-        return $this->port;
+        return $this->config->port ?? $this->port;
     }
 
     /**
@@ -60,7 +62,7 @@ class WebserverConfig
      */
     public function getIpv4(): string
     {
-        return $this->ipv4;
+        return $this->config->ipv4 ?? $this->ipv4;
     }
 
     /**
@@ -68,7 +70,7 @@ class WebserverConfig
      */
     public function getIpv6(): string
     {
-        return $this->ipv6;
+        return $this->config->ipv6 ?? $this->ipv6;
     }
 
 
