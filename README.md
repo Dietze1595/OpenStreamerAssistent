@@ -1,5 +1,6 @@
 # Open Twitch Assistent
 ![GitHub](https://img.shields.io/github/license/kapsonfire-de/opentwitchassistent?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/kapsonfire-de/opentwitchassistent)
 ![Subreddit](https://img.shields.io/reddit/subreddit-subscribers/TwitchAssistent?style=plastic)
 
 
