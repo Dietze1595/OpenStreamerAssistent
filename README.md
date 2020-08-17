@@ -1,5 +1,6 @@
 # Open Twitch Assistent
 ![GitHub](https://img.shields.io/github/license/kapsonfire-de/opentwitchassistent?style=plastic)
+![Subreddit](https://img.shields.io/reddit/subreddit-subscribers/TwitchAssistent?style=plastic)
 
 
 **Open Twitch Assistent** is a free open source project targeting streamers to improve the viewers experience and giving interactive features to their community like Twitch Extensions, Chatevents and so on.
