@@ -1,6 +1,7 @@
 # Open Twitch Assistent
 ![GitHub](https://img.shields.io/github/license/kapsonfire-de/opentwitchassistent?style=plastic)
 ![PHP](https://img.shields.io/badge/PHP-8.0.0-green?style=plastic)
+![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/kapsonfire-de/opentwitchassistent?style=plastic)
 ![GitHub last commit](https://img.shields.io/github/last-commit/kapsonfire-de/opentwitchassistent?style=plastic)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/kapsonfire-de/opentwitchassistent?style=plastic)
 ![Subreddit](https://img.shields.io/reddit/subreddit-subscribers/TwitchAssistent?style=plastic)
