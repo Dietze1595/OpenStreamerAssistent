@@ -1,10 +1,13 @@
 {
-  "name": "kapsonfire/opentwitchassistent",
+  "name": "kapsonfire/openstreamerassistent",
   "type": "project",
   "require": {
     "ext-swoole": "^4.5@alpha",
     "php": ">=8.0.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-pdo": "*",
+    "twig/twig": "^3.0",
+    "ext-curl": "*"
   },
   "license": "BSD-3.0",
   "require-dev": {
@@ -12,7 +15,8 @@
   },
   "autoload": {
     "psr-4": {
-      "OTA\\": "inc/OTA"
+      "OTA\\": "inc/OSA",
+      "Plugins\\": "inc/Plugins"
     }
   }
 }

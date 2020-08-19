@@ -1,5 +1,9 @@
 {
   "authtoken": "XXXXXXXXXXXXXXX",
   "username": "BOT_NAME",
-  "channel": "YOUR_CHANNEL"
+  "channel": "YOUR_CHANNEL",
+  "apitoken": null,
+  "apirefresh": null,
+  "appid": "abcdefg123456789abcdefg",
+  "appsecret": "secret123456789secret"
 }
