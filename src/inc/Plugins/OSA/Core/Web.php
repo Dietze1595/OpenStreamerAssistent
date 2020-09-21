@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Plugins\OTA\Core;
+namespace Plugins\OSA\Core;
 
 
 use OSA\Plugins\CorePlugin;

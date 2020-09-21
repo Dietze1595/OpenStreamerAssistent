@@ -15,7 +15,7 @@
   },
   "autoload": {
     "psr-4": {
-      "OTA\\": "inc/OSA",
+      "OSA\\": "inc/OSA",
       "Plugins\\": "inc/Plugins"
     }
   }

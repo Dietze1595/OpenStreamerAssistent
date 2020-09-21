@@ -50,7 +50,7 @@ class PluginSystem
                 if (class_exists($className)) {
                     if (is_subclass_of($className, Plugin::class)) {
                         DEBUG_LOG('Load plugin: ' . $className);
-                        $plugin = new $className();
+                        $plugin = $className::getInstance();
                         self::$plugins[] = $plugin;
                     } else {
                         DEBUG_LOG($className . ' is not a plugin');

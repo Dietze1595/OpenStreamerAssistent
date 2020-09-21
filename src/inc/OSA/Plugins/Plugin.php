@@ -10,7 +10,11 @@ use OSA\Webserver\Webserver;
 abstract class Plugin
 {
 
+
+    private static array $self = [];
+
     private array $installConfig;
+
 
 
     protected function addRoute(string $route, callable $cb)
@@ -42,7 +46,14 @@ abstract class Plugin
         return $cnf + $defaultConfig;
     }
 
-    public function __construct()
+    public static function getInstance() : static {
+        if(isset(static::$self[static::class]))
+            return static::$self[static::class];
+        static::$self[static::class] = new static();
+        return static::$self[static::class];
+    }
+
+    private function __construct()
     {
         $this->installConfig = $this->getInstallationConfig();
         while($this->getVersion() > $this->installConfig['version']) {
