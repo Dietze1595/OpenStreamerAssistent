@@ -62,10 +62,42 @@ class TwitchUser extends Plugin
 
     private array $cache = [];
 
+
+    public function getUserByName(string $name): ?User
+    {
+        $name = strtolower($name);
+        foreach ($this->cache as $id => $value) {
+            /**
+             * @var User $tmpUser
+             */
+            $tmpUser = $value['user'];
+            if (strtolower($tmpUser->getName()) === $name) {
+                $this->cache[$id]['time'] = time();
+                return $tmpUser;
+            }
+        }
+        try {
+            $con = PDO::getInstance()->get();
+            $stmt = $con->prepare('SELECT * FROM `users` WHERE `name` = :name');
+            $stmt->bindValue(':name', $name);
+            $stmt->execute();
+            if ($stmt->rowCount() === 0) {
+                return NULL;
+            }
+            $user = new User($stmt->fetch(\PDO::FETCH_ASSOC));
+            $this->cache[$user->getUid()] = ['time' => time(), 'user' => $user];
+            return $user;
+        } catch (\Exception $exception) {
+
+        } finally {
+            isset($con) && PDO::getInstance()->put($con);
+        }
+        return NULL;
+    }
+
     public function getUserByID(int $uid): ?User
     {
         if (isset($this->cache[$uid])) {
-            DEBUG_LOG('GET USER BY CACHE: ' . $uid);
             $this->cache[$uid]['time'] = time();
             return $this->cache[$uid]['user'];
         }
@@ -90,7 +122,6 @@ class TwitchUser extends Plugin
 
     public function createOrGetUser(string $username, int $uid): User
     {
-        DEBUG_LOG('CREATE OR GET: ' . $username . ' (' . $uid . ')');
         $user = $this->getUserByID($uid);
         if ($user !== NULL) return $user;
         try {

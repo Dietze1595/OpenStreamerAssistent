@@ -53,7 +53,7 @@ abstract class Plugin
         return static::$self[static::class];
     }
 
-    private function __construct()
+    protected function __construct()
     {
         $this->installConfig = $this->getInstallationConfig();
         while($this->getVersion() > $this->installConfig['version']) {
