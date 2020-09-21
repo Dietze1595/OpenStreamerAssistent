@@ -134,7 +134,6 @@ class Loyality extends Plugin
             $points = $basePoints;
             if (isset($this->lastactives[$user])) {
                 $points *= $activeMulti;
-                DEBUG_LOG($user->getName() . ' is active');
             }
 
             $addedPoints['add' . $points][] = $user->getUid();
