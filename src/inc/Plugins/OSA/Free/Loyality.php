@@ -52,7 +52,7 @@ class Loyality extends Plugin
     function onActivated(): void
     {
         ChatClient::getSELF()->on('message', Closure::fromCallable([$this, 'onTwitchMessage']));
-        $this->loyalityTimer = Timer::tick(15000, Closure::fromCallable([$this, 'addLoyalityPointsByTimer']));
+        $this->loyalityTimer = Timer::tick(60*1000, Closure::fromCallable([$this, 'addLoyalityPointsByTimer']));
     }
 
     function onDeactivated(): void
