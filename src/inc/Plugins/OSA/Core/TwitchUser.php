@@ -123,7 +123,12 @@ class TwitchUser extends Plugin
     public function createOrGetUser(string $username, int $uid): User
     {
         $user = $this->getUserByID($uid);
-        if ($user !== NULL) return $user;
+        if ($user !== NULL) {
+            if(strtolower($user->getName()) !== strtolower($username)) {
+                $user->setName($username);
+            }
+            return $user;
+        }
         try {
             $con = PDO::getInstance()->get();
             $stmt = $con->prepare('INSERT INTO `users` SET `id` = :uid, `name` = :name');
