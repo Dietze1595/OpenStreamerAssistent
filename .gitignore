@@ -2,3 +2,4 @@
 /src/vendor/
 /priv-src/
 /src/config/*.json
+/src/composer.lock
