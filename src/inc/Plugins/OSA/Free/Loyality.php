@@ -22,11 +22,13 @@ class Loyality extends Plugin
 
 
     private WeakMap $lastactives;
+    private WeakMap $pointsCache;
 
     public function __construct()
     {
         parent::__construct();
         $this->lastactives = new WeakMap();
+        $this->pointsCache = new WeakMap();
     }
 
     public function getPluginName(): string
@@ -52,7 +54,7 @@ class Loyality extends Plugin
     function onActivated(): void
     {
         ChatClient::getSELF()->on('message', Closure::fromCallable([$this, 'onTwitchMessage']));
-        $this->loyalityTimer = Timer::tick(60*1000, Closure::fromCallable([$this, 'addLoyalityPointsByTimer']));
+        $this->loyalityTimer = Timer::tick(60 * 1000, Closure::fromCallable([$this, 'addLoyalityPointsByTimer']));
     }
 
     function onDeactivated(): void
@@ -110,6 +112,90 @@ class Loyality extends Plugin
         return 1.5;
     }
 
+    private function usePointsByMap(array $addedPoints)
+    {
+        try {
+            $con = PDO::getInstance()->get();
+            $con->beginTransaction();
+            $stmt = $con->prepare('INSERT INTO `loyality` (`id`, `points`) VALUES (:uid, :points) ON DUPLICATE KEY UPDATE `points`=`points`+VALUES(`points`);');
+            foreach ($addedPoints as $k => $userids) {
+                $points = floatval(substr($k, 3));
+                $stmt->bindValue(':points', $points);
+                foreach ($userids as $uid) {
+                    $stmt->bindValue(':uid', $uid);
+                    $stmt->execute();
+                }
+            }
+            $con->commit();
+        } catch (\Exception $ex) {
+            isset($con) && $con->inTransaction() && $con->rollBack();
+        } finally {
+            isset($con) && PDO::getInstance()->put($con);
+        }
+    }
+
+    private function getStartPoints() :float {
+        return 0;
+    }
+
+    public function getUserPoints(User $user) : int {
+        if(isset($this->pointsCache[$user])) {
+            return $this->pointsCache[$user];
+        }
+        $this->pointsCache[$user] = $this->_getUserPoints($user);
+        return $this->pointsCache[$user];
+    }
+    private function _getUserPoints(User $user): int
+    {
+        try {
+            $con = PDO::getInstance()->get();
+            $stmt = $con->prepare('SELECT * FROM `loyality` WHERE `id` = :id');
+
+            $stmt->bindValue(':id', $user->getUid());
+            $stmt->execute();
+            if($stmt->rowCount() === 0) {
+                $points = $this->getStartPoints();
+                $con->prepare('INSERT INTO `loyality` (`id`, `points`) VALUES (?, ?)')->execute([$user->getUid(), $points]);
+                return $points;
+            }
+            return $stmt->fetch(\PDO::FETCH_ASSOC)['points'];
+
+
+        } catch (\Exception $ex) {
+            throw new \Exception('db error getting points');
+        } finally {
+            isset($con) && PDO::getInstance()->put($con);
+        }
+
+
+    }
+
+    public function addPointsToUser(User $user, float $points): bool
+    {
+        $pts = $this->getUserPoints($user);
+        if($points < 0 && ($pts - $points) < 0)
+            return false;
+        $newPoints = $points + $pts;
+
+
+        try {
+            $con = PDO::getInstance()->get();
+            $stmt = $con->prepare('UPDATE `loyality` SET `points` = :pts WHERE `id` = :id');
+
+            $stmt->bindValue(':id', $user->getUid());
+            $stmt->bindValue(':pts', $newPoints);
+            $stmt->execute();
+            $this->pointsCache[$user] = $newPoints;
+        } catch (\Exception $ex) {
+            throw new \Exception('db error setting points');
+        } finally {
+            isset($con) && PDO::getInstance()->put($con);
+        }
+
+        return true;
+
+    }
+
     private function addLoyalityPointsByTimer(): void
     {
         $this->deleteOldActives();
@@ -138,26 +224,9 @@ class Loyality extends Plugin
 
             $addedPoints['add' . $points][] = $user->getUid();
         }
-
-        try {
-            $con = PDO::getInstance()->get();
-            $con->beginTransaction();
-            $stmt = $con->prepare('INSERT INTO `loyality` (`id`, `points`) VALUES (:uid, :points) ON DUPLICATE KEY UPDATE `points`=`points`+VALUES(`points`);');
-            foreach ($addedPoints as $k => $userids) {
-                $points = floatval(substr($k, 3));
-                $stmt->bindValue(':points', $points);
-                foreach($userids as $uid) {
-                    $stmt->bindValue(':uid', $uid);
-                    $stmt->execute();
-                }
-            }
-            $con->commit();
-        } catch (\Exception $ex) {
-            isset($con) && $con->inTransaction() && $con->rollBack();
-        } finally {
-            isset($con) && PDO::getInstance()->put($con);
-        }
+        $this->usePointsByMap($addedPoints);
     }
+
 
     private function deleteOldActives()
     {
