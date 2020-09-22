@@ -109,7 +109,7 @@ class ChatClient
             $this->client->isConnected() && $this->client->close();
             $this->client = NULL;
         }
-        $this->client = new WebsocketClient('wss://irc-ws-r.chat.twitch.tv:443');
+        $this->client = new WebsocketClient('wss://irc-ws-ga.chat.twitch.tv:443');
 
 
         $this->client->on('connect', Closure::fromCallable([$this, 'onConnected']));
@@ -157,6 +157,7 @@ class ChatClient
             DEBUG_LOG('[INC] ' . $msg);
             if (str_starts_with($msg, 'PING ')) { //answer PING
                 $this->send('PONG');
+                $this->send('PING');
             }
             $msg = IRCParser::parse($msg);
             if($msg === null) continue;

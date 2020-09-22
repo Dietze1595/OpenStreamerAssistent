@@ -91,6 +91,8 @@ class Loyality extends Plugin
 
     public function onTwitchMessage(string $event, ChatClient $client, BaseMessage $msg): void
     {
+        if(!$this->isActivated())
+            return;
         if ($msg instanceof PRIVMSG) {
             $this->onPrivMSG($msg);
         }
